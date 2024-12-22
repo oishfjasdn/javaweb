@@ -1,0 +1,7 @@
+com\example\ads\Advertisement.class
+com\example\ads\Hello.class
+com\example\ads\UserLoginServlet.class
+com\example\ads\UserRegistrationServlet.class
+com\example\ads\AdvertisementManagementServlet.class
+com\example\ads\CORSFilter.class
+com\example\ads\RandomAdServlet.class
