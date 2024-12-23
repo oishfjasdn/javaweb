@@ -62,8 +62,14 @@
 
             Connection conn = DriverManager.getConnection("jdbc:mysql://j.skpay.com:5306/ads_management", "root", "Db_223312");
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM advertisements WHERE user_id = ?");
-            stmt.setInt(1, userId);
-            ResultSet rs = stmt.executeQuery();
+            PreparedStatement stmt2 = conn.prepareStatement("SELECT * FROM advertisements");
+            ResultSet rs;
+            if (userId == 1) {
+                rs = stmt2.executeQuery();
+            } else {
+                stmt.setInt(1, userId);
+                rs = stmt.executeQuery();
+            }
 
             while (rs.next()) {
                 int id = rs.getInt("id");
@@ -80,7 +86,10 @@
         <td><%= clickCount %></td>
         <td>
             <a href="edit_advertisement.jsp?id=<%= id %>">Edit</a>
-            <a href="manageAds?action=delete&id=<%= id %>">Delete</a>
+
+            <form action="manageAds?action=delete&id=<%= id %>" method="post" enctype="multipart/form-data">
+                <input type="submit" value="Delete">
+            </form>
         </td>
     </tr>
     <%
@@ -95,6 +104,9 @@
 <br>
 <a href="add_advertisement.jsp">Add New Advertisement</a>
 <br>
+<a href="adPerformance.jsp">View Ad Performance Visualization</a>
+<br>
+
 <a href="logout.jsp">Logout</a>
 </body>
 </html>

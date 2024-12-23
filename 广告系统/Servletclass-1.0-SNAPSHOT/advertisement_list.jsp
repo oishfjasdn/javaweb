@@ -6,12 +6,13 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4; /* Light gray background */
+            background-color: #f0f0f0; /* Light gray background */
             color: #333; /* Dark gray text */
         }
         h2 {
             color: #007bff; /* Blue color for headings */
             margin-bottom: 20px;
+            text-align: center; /* Center align headings */
         }
         table {
             width: 100%;
@@ -24,69 +25,26 @@
             text-align: left;
         }
         th {
-            background-color: #f2f2f2; /* Light gray background for headers */
-            color: #333; /* Dark gray text for headers */
+            background-color: #007bff; /* Blue background for table headers */
+            color: #fff; /* White text for table headers */
         }
         img {
             max-width: 100px;
             height: auto;
+            border-radius: 10px; /* Rounded corners for images */
         }
-        button {
-            background-color: #007bff; /* Blue color for buttons */
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            cursor: pointer;
-            width: 100%;
+        a {
+            text-decoration: none;
+            color: #007bff; /* Blue color for links */
         }
-        button:hover {
-            opacity: 0.8;
-        }
-        .ad-container {
-            border: 1px solid #ddd; /* Light gray border */
-            padding: 20px;
-            margin: 20px 0;
-            background-color: #f2f2f2; /* Light gray background */
+        a:hover {
+            color: #0056b3; /* Darker blue on hover */
         }
     </style>
-    <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function() {
-            // 获取按钮元素
-            var adButton = document.getElementById('fetchAdButton');
-
-            // 为按钮添加点击事件监听器
-            if (adButton) {
-                adButton.addEventListener('click', fetchAd);
-            }
-
-            function fetchAd() {
-                // 发送请求获取广告数据
-                fetch('http://ads.wztj.net:8000/Servletclass-1.0-SNAPSHOT/randomAd')
-                    .then(response => response.json())
-                    .then(adData => {
-                        console.log('广告数据:', adData); // 调试用
-                        if (adData) {
-                            renderAd(adData);
-                        }
-                    })
-                    .catch(error => console.error('Error loading ad:', error));
-            }
-
-            function renderAd(adData) {
-                // 在这里定义如何渲染广告数据
-                // 假设返回的数据包含一个message字段
-                var adContainer = document.getElementById('randomAdContainer');
-                if (adContainer) {
-                    adContainer.innerHTML = '<p>' + adData.message + '</p>';
-                }
-            }
-        });
-    </script>
 </head>
 <body>
 <h2>My Advertisements</h2>
-<table>
+<table border="1">
     <tr>
         <th>ID</th>
         <th>Title</th>
@@ -104,8 +62,14 @@
 
             Connection conn = DriverManager.getConnection("jdbc:mysql://j.skpay.com:5306/ads_management", "root", "Db_223312");
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM advertisements WHERE user_id = ?");
-            stmt.setInt(1, userId);
-            ResultSet rs = stmt.executeQuery();
+            PreparedStatement stmt2 = conn.prepareStatement("SELECT * FROM advertisements");
+            ResultSet rs;
+            if (userId == 1) {
+                rs = stmt2.executeQuery();
+            } else {
+                stmt.setInt(1, userId);
+                rs = stmt.executeQuery();
+            }
 
             while (rs.next()) {
                 int id = rs.getInt("id");
@@ -118,11 +82,13 @@
         <td><%= id %></td>
         <td><%= title %></td>
         <td><%= detailPage %></td>
-        <td><img src="http://ads.wztj.net:8000/<%= imageUrl %>" alt="<%= title %>" width="100"></td>
+        <td><img src="<%= imageUrl %>" width="100"></td>
         <td><%= clickCount %></td>
         <td>
             <a href="edit_advertisement.jsp?id=<%= id %>">Edit</a>
-            <a href="manageAds?action=delete&id=<%= id %>">Delete</a>
+            <form action="manageAds?action=delete&id=<%= id %>" method="post" enctype="multipart/form-data">
+                <input type="submit" value="Delete">
+            </form>
         </td>
     </tr>
     <%
@@ -135,16 +101,10 @@
     %>
 </table>
 <br>
-
-<!-- 添加一个按钮 -->
-<button id="fetchAdButton">获取随机广告</button>
-
-<!-- 随机广告显示容器 -->
-<div id="randomAdContainer" class="ad-container"></div>
-
-<br>
 <a href="add_advertisement.jsp">Add New Advertisement</a>
+<br><a href="adPerformance.jsp">View Ad Performance Visualization</a>
 <br>
 <a href="logout.jsp">Logout</a>
 </body>
 </html>
+
