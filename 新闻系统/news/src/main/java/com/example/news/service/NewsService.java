@@ -19,4 +19,12 @@ public class NewsService {
 
         return newsMapper.selectAll();
     }
+
+    /**
+     * 根据名称查询
+     */
+    public List<News> selectAllByTitle(String title) {
+
+        return newsMapper.selectAllByTitle(title);
+    }
 }

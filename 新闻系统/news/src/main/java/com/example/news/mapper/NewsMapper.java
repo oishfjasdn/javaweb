@@ -10,6 +10,12 @@ public interface NewsMapper {
     /**
      * 查询所有
      */
-    @Select("select id,title,content from news")
+    @Select("select news.id,news.title,news.content,news.image,type.id,type.name from news,type where news.type_id=type.id")
     List<News> selectAll();
+
+    /**
+     * 根据名字查询
+     */
+    @Select("select id,title from news")
+    List<News> selectAllByTitle(String title);
 }
